@@ -105,13 +105,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Create a new Work Directory')
 
     # Add an argument to the parser
-    parser.add_argument('--job', help='Path to the folder')
+    parser.add_argument('--job-path', help='Path to the folder')
 
     # Parse the command-line arguments
     args = parser.parse_args()
 
     # Access the variable values
-    project_path = args.job
+    project_path = args.job_path
     
     workflow_name, base_path = get_base_folder(project_path)
     
