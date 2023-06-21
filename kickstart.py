@@ -49,6 +49,15 @@ def create_directory_structure(directory, folders_dict):
             create_directory_structure(path, content)
 
 
+def get_base_folder(filepath):
+    basename = os.path.basename(filepath.rstrip('/'))
+    folder_path = os.path.dirname(filepath)
+    if not basename:
+        return get_base_folder(folder_path)
+    else:
+        return basename, folder_path
+
+
 def fetch_online(url, output_file):
     # Send a GET request to the URL
     response = requests.get(url)
@@ -59,25 +68,37 @@ def fetch_online(url, output_file):
             file.write(response.content)
 
 
+def install_library(library_name):
+    try:
+        if library_name == "GitPython":
+            __import__("git")
+        else:
+            __import__(library_name)
+        print(f"{library_name} library is already installed.")
+    except ImportError:
+        print(f"{library_name} library is not installed. Installing it now...")
+        try:
+            subprocess.run(["pip", "install", library_name], check=True)
+            print(f"{library_name} library has been successfully installed. Please run the script again.")
+            exit(0)
+        except subprocess.CalledProcessError:
+            print(f"Failed to install {library_name} library. Please install it manually.")
+
+
+
+
 if __name__ == "__main__":
     import os
-    import requests
     import subprocess
     import argparse
     # Install GitPython if not already installed
-    try:
-        import git
-        print("GitPython is already installed.")
-    except ImportError:
-        try:
-            # Install GitPython using pip
-            subprocess.run(["pip", "install", "GitPython"], check=True)
-            import git
-            print("GitPython has been successfully installed.")
-        except subprocess.CalledProcessError:
-            print("Failed to install GitPython. Please install it manually.")
+    install_library("GitPython")
+    # Install requests if not already installed
+    install_library("requests")
     
-    base_path = "./"
+    import git
+    import requests
+            
     access_token = os.environ.get("GIT_ACCESS_TOKEN")
     
     # Create the argument parser
@@ -90,9 +111,21 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Access the variable values
-    workflow_name = args.job
+    project_path = args.job
     
-    print(workflow_name)
+    workflow_name, base_path = get_base_folder(project_path)
+    
+    print("Creating a new Work Directory at {}...".format(project_path))
+    
+    # Create the project directory
+    try:
+        if not os.path.exists(project_path):
+            os.makedirs(project_path)
+        else:
+            print("The project directory already exists.")
+            exit(1)
+    except OSError as error:
+        print(error, "Failed to create the project directory.")
 
     folders = {
         workflow_name: {
@@ -121,19 +154,22 @@ if __name__ == "__main__":
     create_directory_structure(base_path, folders)
 
     # Download the README.md file from the GitHub repository
-    readme_url = "https://raw.githubusercontent.com/Seer-BI/boilerplates/main/README.md"
-    readme_output_file = "./{}/README.md".format(workflow_name)
+    readme_url = "https://raw.githubusercontent.com/Seer-BI/boilerplates/main/README_template.md"
+    readme_output_file = os.path.join(project_path, "README.md")
     fetch_online(readme_url, readme_output_file)
 
     # Download the logo from the GitHub repository
     logo_url = "https://github.com/Seer-BI/boilerplates/blob/main/media/company_logo.png"
-    logo_output_file = "./{}/media/company_logo.png".format(workflow_name)
+    logo_output_file = os.path.join(project_path, "media", "company_logo.png")
     fetch_online(logo_url, logo_output_file)
 
     # Download the .gitignore file from the GitHub repository
     gitignore_url = "https://raw.githubusercontent.com/Seer-BI/boilerplates/main/.gitignore"
-    gitignore_output_file = "./{}/.gitignore".format(workflow_name)
+    gitignore_output_file = os.path.join(project_path, ".gitignore")
     fetch_online(gitignore_url, gitignore_output_file)
 
     # Send to GitHub
     create_git_repo(base_path, workflow_name, access_token)
+
+
+    # python -u "c:\Users\Chukwudi Ajoku\Project\SeerBI Utilities\kickstart.py" --job "c:\Users\Chukwudi Ajoku\Project\Playplay"
