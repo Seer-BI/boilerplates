@@ -1,4 +1,4 @@
-![Alt Text]("./media/company_logo.png")
+![Alt Text](./media/company_logo.png)
 # Machine Learning Project
 
 ## Overview
