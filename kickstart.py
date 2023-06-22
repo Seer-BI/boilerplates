@@ -50,8 +50,20 @@ def create_directory_structure(directory, folders_dict):
 
 
 def get_base_folder(filepath):
-    basename = os.path.basename(filepath.rstrip('/'))
-    folder_path = os.path.dirname(filepath)
+    # If folder location is explicitly specified, use it
+    # otherwise, use the default "Projects" folder located inthe user's home directory
+    home_folder = os.path.expanduser("~")
+    projects_folder = os.path.join(home_folder, "Projects")
+    
+    # Create "Projects" folder if it doesn't exist
+    if not os.path.exists(projects_folder):
+        os.makedirs(projects_folder)
+    
+    absolute_path = os.path.join(projects_folder, filepath)
+    
+    basename = os.path.basename(absolute_path.rstrip('/'))
+    folder_path = os.path.dirname(absolute_path)
+    
     if not basename:
         return get_base_folder(folder_path)
     else:
@@ -91,6 +103,7 @@ if __name__ == "__main__":
     import os
     import subprocess
     import argparse
+    
     # Install GitPython if not already installed
     install_library("GitPython")
     # Install requests if not already installed
@@ -114,6 +127,8 @@ if __name__ == "__main__":
     project_path = args.job_path
     
     workflow_name, base_path = get_base_folder(project_path)
+    
+    project_path = os.path.join(base_path, workflow_name)
     
     print("Creating a new Work Directory at {}...".format(project_path))
     
@@ -172,4 +187,19 @@ if __name__ == "__main__":
     create_git_repo(base_path, workflow_name, access_token)
 
 
-    # python -u "c:\Users\Chukwudi Ajoku\Project\SeerBI Utilities\kickstart.py" --job "c:\Users\Chukwudi Ajoku\Project\Playplay"
+    # python -u "c:\Users\Chukwudi Ajoku\Project\SeerBI Utilities\kickstart.py" --job-path "c:\Users\Chukwudi Ajoku\Project\Playplay"
+
+
+# How to set up if you want it easier, run as cmd as admin:
+# 1. copy "path\to\kickstart.py" "c:\" (or wherever safer you want it)
+# 2. notepad $PROFILE
+# 3. add this line to the file: function kickstart {python -u "c:\kickstart.py" --job-path $args[0]}
+# 4. save and close
+# 5. restart powershell
+# 6. run "kickstart Folder"
+# Folder is a folder name or path.
+
+# A folder called "Projects" must exist in your home directory. where it does not exist, it will be created.
+
+# Note: You may need to enable script execution in PowerShell. You can do this by opening an elevated PowerShell session (Run as Administrator) and running the following command:
+# Set-ExecutionPolicy RemoteSigned
