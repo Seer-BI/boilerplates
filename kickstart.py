@@ -153,11 +153,11 @@ if __name__ == "__main__":
                 "model_deployment.ipynb"
             ],
             "media": [],
-            "artifacts": [
-                "data",
-                "models",
-                "reports"
-            ],
+            "artifacts": {
+                "data": [],
+                "models": [],
+                "reports": []
+            },
             "scripts": [
                 "app.py"
             ],
