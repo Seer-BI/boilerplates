@@ -12,15 +12,17 @@ and can be called thus:
 ```
 import boto3
 import os, ast
+
+AWS_ACCESS = ast.literal_eval(os.getenv("SeerBI_AWS_ACCESS"))
 session = boto3.Session(
-        aws_access_key_id=ast.literal_eval(os.getenv("SeerBI_AWS_ACCESS"))["key"],
-        aws_secret_access_key=ast.literal_eval(os.getenv("SeerBI_AWS_ACCESS"))["secret"],
-        region_name=ast.literal_eval(os.getenv("SeerBI_AWS_ACCESS"))["region"]
+        aws_access_key_id=AWS_ACCESS["key"],
+        aws_secret_access_key=AWS_ACCESS["secret"],
+        region_name=AWS_ACCESS["region"]
     )
 # Services can be called
 textract = session.client('textract')
 
-s3 = session.client('s3', region_name=ast.literal_eval(os.getenv("SeerBI_AWS_ACCESS"))["region"])
+s3 = session.client('s3', region_name=AWS_ACCESS["region"])
 
 ```
 For microsoft azure or pyodbc related credentials, let them be saved as connection strings thus:
