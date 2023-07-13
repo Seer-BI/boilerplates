@@ -24,9 +24,8 @@ For microsoft azure or pyodbc related credentials, let them be saved as connecti
 ```
 Variable name: <CompanyName>_<databaseName>_CONNSTR
 Value: DRIVER={ODBC Driver 17 for SQL Server};SERVER=XXX.XX.XX.XXX;DATABASE=databaseName;UID=userID;PWD=password <br>
-and they can be called thus:
 ```
-
+and they can be called thus:
 ```
     import os
     import pyodbc
@@ -37,8 +36,9 @@ and they can be called thus:
 for aws hosted or other databases where you could use psycopg2, please also use a similar convention as above
 ```
 Variable name: <CompanyName>_<databaseName>_CONNSTR <br>
-Value: host='databaseHost.xxxxxx.eu-west-x.rds.amazonaws.com' port=xxxx dbname='databaseName' user='databaseUser' password='p@ssword' <br> and can be connected thus:
+Value: host='databaseHost.xxxxxx.eu-west-x.rds.amazonaws.com' port=xxxx dbname='databaseName' user='databaseUser' password='p@ssword' <br> 
 ```
+and can be connected thus:
 ```
     import os
     import psycopg2
