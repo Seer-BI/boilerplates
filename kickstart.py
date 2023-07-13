@@ -6,7 +6,8 @@ def create_git_repo(folder_path, repo_name, access_token):
         "Accept": "application/vnd.github.v3+json"
     }
     payload = {
-        "name": repo_name
+        "name": repo_name,
+        "private": True
     }
     response = requests.post(repo_url, json=payload, headers=headers)
     print(response.status_code)
