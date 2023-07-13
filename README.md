@@ -21,9 +21,11 @@ s3 = session.client('s3', region_name=ast.literal_eval(os.getenv("SeerBI_AWS_ACC
 
 ```
 For microsoft azure or pyodbc related credentials, let them be saved as connection strings thus:
+```
 Variable name: <CompanyName>_<databaseName>_CONNSTR
 Value: DRIVER={ODBC Driver 17 for SQL Server};SERVER=XXX.XX.XX.XXX;DATABASE=databaseName;UID=userID;PWD=password <br>
 and they can be called thus:
+```
 
 ```
     import os
@@ -32,16 +34,27 @@ and they can be called thus:
     print("Connected to Microsoft SQL Server")
 ```
 
-for aws hosted or other databases where you could use psycopg2, please also use similar convention as above
+for aws hosted or other databases where you could use psycopg2, please also use a similar convention as above
+```
 Variable name: <CompanyName>_<databaseName>_CONNSTR <br>
-Value: host='databaseHost.xxxxxx.eu-west-x.rds.amazonaws.com' port=5432 dbname='databaseName' user='databaseUser' password='p@ssword' <br> and can be connected thus:
-
+Value: host='databaseHost.xxxxxx.eu-west-x.rds.amazonaws.com' port=xxxx dbname='databaseName' user='databaseUser' password='p@ssword' <br> and can be connected thus:
+```
 ```
     import os
     import psycopg2
     conn = psycopg2.connect(os.environ.get(<CompanyName>_<databaseName>_CONNSTR))
     print("Connected to Server")
 ```
+You might want to do something in the lines of
+```
+with open psycopg2.connect(os.environ.get(<CompanyName>_<databaseName>_CONNSTR)) as conn:
+        cursor = conn.cursor()
+        # write query here
+        cursor.execute(query)
+        conn.commit()
+```
+
+using the style above would ensure that db is closed after running those lines. <be>
 
 The kickstart script is to be called thus: <br>
 
