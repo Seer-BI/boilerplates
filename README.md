@@ -10,6 +10,7 @@ Before commencing the project, ensure all necessary access credentials are store
 and can be called thus:
 
 ```
+import boto3
 import os, ast
 session = boto3.Session(
         aws_access_key_id=ast.literal_eval(os.getenv("SeerBI_AWS_ACCESS"))["key"],
