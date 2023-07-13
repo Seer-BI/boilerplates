@@ -1,10 +1,53 @@
 # Usage
+Ensure a valid GitHub access token is saved as an environment variable with alias _"GIT_ACCESS_TOKEN"_.
+## Important Notice
+Before commencing the project, ensure all necessary access credentials are stored securely. The following conventions should be adopted.
+### For AWS keys:
+<companyName>_AWS_ACCESS (eg SeerBI_AWS_ACCESS)
+{"key": "AKIA_XXXXXXXXXX", "secret": "secret", "region": "region", "owner": "owner_number", "arn": "arn"}
+and can be called thus:
 
-The kickstart script is to be called thus:
+```
+import os, ast
+session = boto3.Session(
+        aws_access_key_id=ast.literal_eval(os.getenv("SeerBI_AWS_ACCESS"))["key"],
+        aws_secret_access_key=ast.literal_eval(os.getenv("SeerBI_AWS_ACCESS"))["secret"],
+        region_name=ast.literal_eval(os.getenv("SeerBI_AWS_ACCESS"))["region"]
+    )
+# Services can be called
+textract = session.client('textract')
+
+s3 = session.client('s3', region_name=ast.literal_eval(os.getenv("SeerBI_AWS_ACCESS"))["region"])
+
+```
+For microsoft azure or pyodbc related credentials, let them be saved as connection strings thus:
+Variable name: <CompanyName>_<databaseName>_CONNSTR
+Value: DRIVER={ODBC Driver 17 for SQL Server};SERVER=XXX.XX.XX.XXX;DATABASE=databaseName;UID=userID;PWD=password <br>
+and they can be called thus:
+
+```
+    import os
+    import pyodbc
+    conn = pyodbc.connect(os.environ.get(<CompanyName>_<databaseName>_CONNSTR))
+    print("Connected to Microsoft SQL Server")
+```
+
+for aws hosted or other databases where you could use psycopg2, please also use similar convention as above
+Variable name: <CompanyName>_<databaseName>_CONNSTR <br>
+Value: host='databaseHost.xxxxxx.eu-west-x.rds.amazonaws.com' port=5432 dbname='databaseName' user='databaseUser' password='p@ssword' <br> and can be connected thus:
+
+```
+    import os
+    import psycopg2
+    conn = psycopg2.connect(os.environ.get(<CompanyName>_<databaseName>_CONNSTR))
+    print("Connected to Server")
+```
+
+The kickstart script is to be called thus: <br>
 
 *python -u "path/to/kickstart.py" --job-path "<desired/location/of/the/job>"*
 
-Ensure a valid GitHub access token is saved as an environment variable with alias _"GIT_ACCESS_TOKEN"_.
+
 
 
 ## How to set up if you want it easier, run as cmd as admin:
