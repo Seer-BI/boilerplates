@@ -3,8 +3,10 @@ Ensure a valid GitHub access token is saved as an environment variable with alia
 ## Important Notice
 Before commencing the project, ensure all necessary access credentials are stored securely. The following conventions should be adopted.
 ### For AWS keys:
+```
 <companyName>_AWS_ACCESS (eg SeerBI_AWS_ACCESS)
 {"key": "AKIA_XXXXXXXXXX", "secret": "secret", "region": "region", "owner": "owner_number", "arn": "arn"}
+```
 and can be called thus:
 
 ```
